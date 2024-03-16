@@ -1,7 +1,7 @@
 import express from 'express';
 import configViewEngine from './configs/viewEngine';
 import initWebRouter from './router/web';
-// import connection from './configs/connectDB';
+import initAPIRoute from './router/api';
 
 require('dotenv').config();
 const app = express();
@@ -13,8 +13,14 @@ app.use(express.json());
 
 //setup config view
 configViewEngine(app);
+
 //setup create router
 initWebRouter(app);
+
+//setup API request router
+initAPIRoute(app);
+
+
 
 //check port
 app.listen(port, () => {
