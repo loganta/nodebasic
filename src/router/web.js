@@ -9,6 +9,7 @@ var appRoot = require('app-root-path');
 let router = express.Router();
 
 //upload file variable
+/*define target folder to store files && convert file name*/
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, appRoot + "/src/public/image/");
@@ -20,6 +21,7 @@ const storage = multer.diskStorage({
     }
 });
 
+/*validation the image type allow upload*/
 const imageFilter = function (req, file, cb) {
     // Accept images only
     if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
@@ -29,10 +31,44 @@ const imageFilter = function (req, file, cb) {
     cb(null, true);
 };
 
+//define MIDDLEWARE storage and filter file to upload
+/* upload single file*/
 let upload = multer({ storage: storage, fileFilter: imageFilter });
+/*upload multiple files and limitation file number upload is 3*/
+let uploadMultipleFiles = multer({ storage: storage, fileFilter: imageFilter }).array('multiple_images', 3);
+//end define MIDDLEWARE storage and filter file to upload
+
 //end upload file variable
 
+
 const initWebRoute = (app) => {
+
+    /*----------------------------------------------------*/
+    //respon the page content upload file
+    router.get('/upload', homeController.getUploadFilePage);
+
+    //handle upload file function
+    router.post('/upload-profile-pic', upload.single('profile_pic'), homeController.handleUploadFile)
+
+    //handle upload multiple files function
+    router.post('/upload-multiple-images', (req, res, next) => {
+        /* can checking and verify MIDDLEWARE has error or not*/
+        uploadMultipleFiles(req, res, (err) => {
+            if (err instanceof multer.MulterError && err.code === "LIMIT_UNEXPECTED_FILE") {
+                // handle multer file limit error here
+                res.send('LIMIT_UNEXPECTED_FILE')
+            } else if (err) {
+                res.send(err)
+            } else {
+                // make sure to call next() if all was well
+                next();
+            }
+        })
+        /* end checking and verify MIDDLEWARE*/
+        /*if pass => run function handleUploadMultipleFiles*/
+    }, homeController.handleUploadMultipleFiles)
+    /*----------------------------------------------------*/
+
     //response the action show homepage
     router.get('/', homeController.getHomepage);
 
@@ -50,15 +86,6 @@ const initWebRoute = (app) => {
 
     //method post data to update data after edit action
     router.post('/update-user', homeController.postUpdateUser);
-
-    /*----------------------------------------------------*/
-
-    //respon the page content upload file
-    router.get('/upload', homeController.getUploadFilePage);
-    //handle upload file function
-    router.post('/upload-profile-pic', upload.single('profile_pic'), homeController.handleUploadFile)
-
-    /*----------------------------------------------------*/
 
     //response the action show about page
     router.get('/about', (req, res) => {
