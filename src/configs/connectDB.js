@@ -1,3 +1,4 @@
+//import mysql2 service to use
 import mysql from 'mysql2/promise';
 
 // // create the connection to database
@@ -11,5 +12,5 @@ const pool = mysql.createPool({
     // password: 'password'
 })
 
-
+//export to use the db connnection config
 export default pool;
