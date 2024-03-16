@@ -12,3 +12,6 @@ npm install --save -exact mysql2@2.3.0
 npm install --save-exact multer@1.4.3
 
 npm install --save-exact app-root-path@3.0.0
+
+Test MIDDLEWARE
+install library logging:  npm install --save-exact morgan@1.10.0
