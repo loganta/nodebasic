@@ -15,3 +15,12 @@ npm install --save-exact app-root-path@3.0.0
 
 Test MIDDLEWARE
 install library logging:  npm install --save-exact morgan@1.10.0
+
+Database: nodejsbasic
+Table: users
+Columns:
+id: INT - autoincrement - key
+firstname: varchar(100)
+lastname: varchar(100)
+email: varchar(100)
+address: varchar(100)
